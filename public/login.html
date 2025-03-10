@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CardioCloud</title>
+    <link rel="icon" href="/assets/logo.png" sizes="16x16 32x32" type="image/png">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous" />
+    <style>
+        .container-flex {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            text-align: center;
+        }
+
+        @media (min-width: 768px) {
+            .container-flex {
+                flex-direction: row;
+            }
+
+            .logo-container {
+                flex-direction: row;
+                justify-content: center;
+                margin-right: 50px;
+            }
+
+            .logo-container img {
+                margin-right: 10px;
+            }
+        }
+
+        .logo-container img {
+            height: 10rem;
+        }
+
+        .logo-container span {
+            color: rgb(0, 0, 0);
+            font-size: 3rem;
+            font-weight: bold;
+        }
+
+        .input-group-text {
+            background-color: #43b3c2;
+            border: none;
+        }
+
+        .input-group-text img {
+            height: 1rem;
+        }
+
+        .form-control {
+            padding-right: 1.5rem;
+            /* espacio para el botón */
+        }
+
+        .input-group-append {
+            position: absolute;
+            right: 0.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .input-group-append button {
+            border: none;
+            background: transparent;
+        }
+
+        .input-group-append img {
+            height: 1.8rem;
+        }
+
+        /* Añadir una clase personalizada para controlar el ancho del campo */
+        .form-control-custom {
+        width: calc(100% - 3.5rem); /* Ajusta el ancho restando el espacio para el botón */
+         max-width: 250px; /* Ajustar el ancho máximo */
+        }
+    </style>
+</head>
+
+<body style="background-color: #90c0c6;">
+    <div class="container-flex">
+        <div class="logo-container">
+            <img src="./assets/logo.png" alt="CardioCloud Logo">
+            <span>CardioCloud</span>
+        </div>
+        <div id="alert-container" class="alert alert-danger" style="display: none;" role="alert">
+            <!-- Mensaje de alerta irá aquí -->
+        </div>
+        <div id="login-form" class="bg-white p-5 rounded-5 text-secondary shadow" style="width: 25rem;">
+            <form id="login-form" action="/login" method="post">
+                <div class="d-flex justify-content-center">
+                    <img src="./assets/login-icon.svg" alt="login-icon" style="height: 7rem">
+                </div>
+                <div class="text-center fs-1 fw-bold" style="color: #0a090c;">Iniciar sesión</div>
+                <div class="input-group mt-4">
+                    <div class="input-group-prepend">
+                        <div class="input-group-text">
+                            <img src="./assets/username-icon.svg" alt="username-icon">
+                        </div>
+                    </div>
+                    <input class="form-control form-control-custom bg-light" type="text" id="correo-login" name="correo"
+                        placeholder="Usuario" required>
+                </div>
+                <div class="input-group mt-1 position-relative">
+                    <div class="input-group-prepend">
+                        <div class="input-group-text">
+                            <img src="./assets/password-icon.svg" alt="password-icon">
+                        </div>
+                    </div>
+                    <input class="form-control form-control-custom bg-light" type="password" id="contraseña-login"
+                        name="contraseña" placeholder="Contraseña" required>
+                    <div class="input-group-append">
+                        <button type="button" class="btn btn-outline-secondary" id="toggle-password-login">
+                            <img src="./assets/ver.png" alt="show-icon" class="show-icon">
+                            <img src="./assets/ojo-cerrado.png" alt="hide-icon" class="hide-icon" style="display:none;">
+                        </button>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-between mt-1">
+                    <div>No tienes cuenta?</div>
+                    <a href="#" class="text-decoration-none text-info fw-semibold" id="show-register">Registrate</a>
+                </div>
+                <button type="submit" class="btn text-white w-100 mt-4 fw-semibold shadow-sm"
+                    style="background-color: #43b3c2;">Iniciar</button>
+            </form>
+        </div>
+        <div id="register-form" class="bg-white p-5 rounded-5 text-secondary shadow"
+            style="width: 25rem; display: none;">
+            <form id="registro-form">
+                <div class="text-center fs-1 fw-bold" style="color: #0a090c;">Registrar</div>
+                <div class="input-group mt-4">
+                    <div class="input-group-prepend">
+                        <div class="input-group-text">
+                            <img src="./assets/username-icon.svg" alt="username-icon">
+                        </div>
+                    </div>
+                    <input class="form-control form-control-custom bg-light" type="text" id="nombre" name="nombre"
+                        placeholder="Nombre" required>
+                </div>
+                <div class="input-group mt-1">
+                    <div class="input-group-prepend">
+                        <div class="input-group-text">
+                            <img src="./assets/google-icon.svg" alt="email-icon">
+                        </div>
+                    </div>
+                    <input class="form-control form-control-custom bg-light" type="email" id="correo" name="correo"
+                        placeholder="Correo" required>
+                </div>
+                <div class="input-group mt-1 position-relative">
+                    <div class="input-group-prepend">
+                        <div class="input-group-text">
+                            <img src="./assets/password-icon.svg" alt="password-icon">
+                        </div>
+                    </div>
+                    <input class="form-control form-control-custom bg-light" type="password" id="contraseña"
+                        name="contraseña" placeholder="Contraseña" required>
+                    <div class="input-group-append">
+                        <button type="button" class="btn btn-outline-secondary" id="toggle-password-register">
+                            <img src="./assets/ver.png" alt="show-icon" class="show-icon">
+                            <img src="./assets/ojo-cerrado.png" alt="hide-icon" class="hide-icon" style="display:none;">
+                        </button>
+                    </div>
+                </div>
+                <div class="input-group mt-1">
+                    <div class="input-group-prepend">
+                        <div class="input-group-text">
+                            <img src="./assets/contrasena.png" alt="verification-icon">
+                        </div>
+                    </div>
+                    <input class="form-control form-control-custom bg-light" type="text" id="codigo-registro"
+                        name="codigo" placeholder="Código de verificación" required>
+                </div>
+                <button type="submit" class="btn text-white w-100 mt-4 fw-semibold shadow-sm"
+                    style="background-color: #43b3c2;">Registrar</button>
+                <div class="text-center mt-2">
+                    <a href="#" class="text-decoration-none text-info fw-semibold" id="show-login">Regresar al inicio</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+
+
+    <script>
+      $(document).ready(function () {
+    $('#show-register').click(function (e) {
+        e.preventDefault();
+        $('#login-form').hide();
+        $('#register-form').show();
+    });
+
+    $('#show-login').click(function (e) {
+        e.preventDefault();
+        $('#register-form').hide();
+        $('#login-form').show();
+    });
+
+    function showAlert(message, type) {
+        $('#alert-container').text(message).removeClass().addClass(`alert alert-${type}`).show();
+        setTimeout(() => {
+            $('#alert-container').hide();
+        }, 3000);
+    }
+
+    $('#login-form').submit(function (e) {
+        e.preventDefault(); // Evitar el envío por defecto del formulario
+
+        var datosLogin = {
+            correo: $('#correo-login').val(),
+            contraseña: $('#contraseña-login').val()
+        };
+
+        $.ajax({
+            type: "POST",
+            url: "/login",
+            data: JSON.stringify(datosLogin),
+            contentType: "application/json",
+            success: function (response) {
+                // Suponiendo que el servidor devuelve una URL de redirección específica
+                if (response.success) {
+                    window.location.href = response.redirectUrl; // Redirige a la URL correspondiente
+                } else {
+                    showAlert(response.error || 'Error al iniciar sesión', 'danger');
+                }
+            },
+            error: function (error) {
+                showAlert(error.responseJSON.error || 'Error al iniciar sesión', 'danger');
+            }
+        });
+    });
+
+    $('#registro-form').submit(function (e) {
+        e.preventDefault(); // Evitar el envío por defecto del formulario
+
+        var datosUsuario = {
+            nombre: $('#nombre').val(),
+            correo: $('#correo').val(),
+            contraseña: $('#contraseña').val(),
+            codigo: $('#codigo-registro').val()
+        };
+
+        $.ajax({
+            type: "POST",
+            url: "/registrar-usuario",
+            data: JSON.stringify(datosUsuario),
+            contentType: "application/json",
+            success: function (response) {
+                showAlert('Usuario registrado con éxito', 'success');
+                $('#registro-form').trigger("reset");
+                $('#register-form').hide();
+                $('#login-form').show();
+            },
+            error: function (error) {
+                showAlert(error.responseJSON.error || 'Usuario Registrado', 'danger');
+            }
+        });
+    });
+
+    $('#toggle-password-login').click(function () {
+        const passwordField = $('#contraseña-login');
+        const passwordFieldType = passwordField.attr('type');
+        passwordField.attr('type', passwordFieldType === 'password' ? 'text' : 'password');
+
+        $(this).find('.show-icon').toggle();
+        $(this).find('.hide-icon').toggle();
+    });
+
+    $('#toggle-password-register').click(function () {
+        const passwordField = $('#contraseña');
+        const passwordFieldType = passwordField.attr('type');
+        passwordField.attr('type', passwordFieldType === 'password' ? 'text' : 'password');
+
+        $(this).find('.show-icon').toggle();
+        $(this).find('.hide-icon').toggle();
+    });
+});
+
+
+    </script>
+</body>
+
+</html>

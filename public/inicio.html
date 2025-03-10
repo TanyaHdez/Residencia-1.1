@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro de Pacientes - CardioCloud</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="icon" href="/assets/logo.png" sizes="16x16 32x32" type="image/png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css" />
+
+    <style>
+        body {
+            display: flex;
+        }
+
+        .sidebar {
+            width: 250px;
+            height: 100vh;
+            background: #343a40;
+            color: white;
+            position: fixed;
+            top: 0;
+            left: 0;
+            padding-top: 20px;
+            text-align: center;
+        }
+
+        .sidebar img {
+            width: 50px;
+            margin-bottom: 10px;
+        }
+
+        .sidebar h4 {
+            margin-bottom: 20px;
+            font-size: 20px;
+        }
+
+        .sidebar a {
+            padding: 15px 10px;
+            text-decoration: none;
+            font-size: 18px;
+            color: white;
+            display: block;
+        }
+
+        .sidebar a:hover {
+            background: #495057;
+        }
+
+        .sidebar .logout-btn {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            padding: 10px;
+            margin-top: 20px;
+        }
+
+        .content {
+            margin-left: 250px;
+            padding: 20px;
+            width: 100%;
+        }
+
+        .top-bar {
+            display: flex;
+            justify-content: flex-end;
+            padding: 10px 20px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .form-container {
+            max-width: 600px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+         /* Botón cerrar sesión arriba */
+         .top-bar {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            padding: 10px 20px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .top-bar button {
+            background: none;
+            border: none;
+            color: #dc3545;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .top-bar button:hover {
+            color: #c82333;
+        }
+
+        .table-container {
+            border: 1px solid #ddd;
+            border-radius: 0.45rem;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            background-color: white;
+        }
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            background-color: #90c0c6;
+        }
+        .table-header .table-title {
+            font-family: Arial, sans-serif;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .table-header .search-container {
+            display: flex;
+            align-items: center;
+        }
+        .table-header .search-container input {
+            border-radius: 0.25rem;
+            border: 1px solid #ddd;
+            padding: 0.5rem;
+            margin-right: 0.5rem;
+        }
+        .table-custom {
+            width: 100%;
+        }
+        .table-custom th, .table-custom td {
+            text-align: center;
+            vertical-align: middle;
+            padding: 0.75rem;
+        }
+        .table-custom th {
+            background-color: #f8f9fa;
+            position: sticky;
+            top: 0;
+            z-index: 2;
+        }
+        .table-custom .table-footer {
+            background-color: #f8f9fa;
+            text-align: right;
+            padding: 0.75rem;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <img src="/assets/logo.png" alt="CardioCloud Logo">
+        <h4>CardioCloud</h4>
+        <a href="/inicio.html">Perfiles de mis pacientes</a>
+        <a href="/formulario">Registro de pacientes</a>
+        <a href="/Perfiles-pacientes">Perfiles de pacientes</a>
+ 
+        <button class="logout-btn" onclick="window.location.href='/logout'">
+            <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+        </button>
+    </div>
+
+    <div class="content">
+        <div class="top-bar">
+            <button onclick="window.location.href='/logout'">
+                <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+            </button>
+        </div>
+
+
+    <div class="container mt-5">
+        <div class="table-container">
+            <div class="table-header">
+                <div class="table-title">Pacientes Registrados</div>
+                <div class="search-container">
+                    <input type="text" id="searchInput" placeholder="Buscar">
+                    <button class="btn btn-outline-light" onclick="buscar()">Buscar</button>
+                    <div class="suggestions" id="suggestions"></div>
+                </div>
+
+            </div>
+        <table class="table table-custom">
+            </thead>
+                <tr>
+                    <th scope="col">Nombre</th>
+                    <th scope="col">Fecha Nacimiento</th>
+                    <th scope="col">Género</th>
+                    <th scope="col">Teléfono</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Fecha Registro</th>
+                    <th scope="col">Archivos</th>
+                </tr>
+            </thead>
+            <tbody id="tablaPacientes">
+            </tbody>
+        </table>
+
+        <!-- Contenedor para mensajes de éxito o error -->
+        <div id="messageContainer" class="mt-3"></div>
+    </div>
+
+<!-- Modal para subir archivos -->
+<div class="modal fade" id="uploadModal" tabindex="-1" role="dialog" aria-labelledby="uploadModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="uploadModalLabel">Subir Archivos para <span id="patientName"></span></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="uploadForm">
+                    <div class="form-group">
+                        <label for="fileType">Tipo de Archivo</label>
+                        <select class="form-control" id="fileType">
+                            <option value="electrocardiograma">Electrocardiograma</option>
+                            <option value="fonocardiograma">Fonocardiograma</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="fileInput">Seleccionar archivo</label>
+                        <input type="file" class="form-control-file" id="fileInput">
+                    </div>
+                    <input type="hidden" id="patientId" value="">
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-danger" data-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-outline-info" onclick="submitFile()">Subir Archivo</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de éxito para subida de archivos -->
+<div class="modal fade" id="uploadSuccessModal" tabindex="-1" role="dialog" aria-labelledby="uploadSuccessModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="uploadSuccessModalLabel">Subida Exitosa</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Archivo subido con éxito.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-success" data-dismiss="modal">Aceptar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+    let pacientesData = [];
+
+    document.addEventListener('DOMContentLoaded', function () {
+        cargarPacientes();
+    });
+    function cargarPacientes() {
+        fetch('/consultar-pacientes')
+            .then(response => response.json())
+            .then(data => {
+                pacientesData = data;  // Guardar los datos en la variable global
+                mostrarPacientes(data);
+            })
+            .catch(error => console.error('Error al cargar los pacientes:', error));
+    }
+
+    function mostrarPacientes(data) {
+        const tabla = document.getElementById('tablaPacientes');
+        //const totalFilas = document.getElementById('totalFilas');
+        tabla.innerHTML = ''; // Limpiar filas existentes
+        data.forEach(paciente => {
+            const fila = tabla.insertRow();
+            fila.insertCell().innerHTML = `<a href="/perfil.html?id=${paciente.id}">${paciente.nombre}</a>`;
+
+            const fechaNacimiento = new Date(paciente.fecha_nacimiento);
+            fechaNacimiento.setMinutes(fechaNacimiento.getMinutes() + fechaNacimiento.getTimezoneOffset());
+            fila.insertCell().textContent = fechaNacimiento.toLocaleDateString('es-MX');
+            fila.insertCell().textContent = paciente.genero;
+            fila.insertCell().textContent = paciente.telefono;
+            fila.insertCell().textContent = paciente.email;
+            const fechaRegistro = new Date(paciente.fecha_registro).toLocaleDateString('es-MX');
+            fila.insertCell().textContent = fechaRegistro;
+            fila.insertCell().innerHTML = `<a href="#" class="btn btn-outline-info btn-sm" data-toggle="modal" data-target="#uploadModal" data-id="${paciente.id}">Subir</a>`;
+        });
+       // totalFilas.textContent = data.length;
+    }
+
+        
+        // Función para configurar la ID del paciente en el formulario modal
+    $('#uploadModal').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget);
+        var patientId = button.data('id');
+        var patientName = button.closest('tr').find('td:first-child').text(); // Obtener el nombre del paciente
+        var modal = $(this);
+        modal.find('.modal-title').text('Subir Archivos para ' + patientName);
+        modal.find('#patientId').val(patientId);
+        modal.find('#patientName').text(patientName); // Establecer el nombre del paciente en el modal
+    });
+
+
+        function submitFile() {
+            var formData = new FormData();
+            formData.append('file', $('#fileInput')[0].files[0]);
+            formData.append('type', $('#fileType').val());  // Incluir el tipo de archivo seleccionado
+            formData.append('patientId', $('#patientId').val());  // ID del paciente para asociar el archivo
+
+            console.log("Datos a enviar:");
+            console.log("File:", $('#fileInput')[0].files[0]);
+            console.log("Type:", $('#fileType').val());
+            console.log("Patient ID:", $('#patientId').val());
+
+                    $.ajax({
+                        type: "POST",
+                        url: "/subir_archivo_px",
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        success: function (response) {
+                            if(response.success){
+                                $('#uploadModal').modal('hide');
+                                $('#uploadSuccessModal').modal('show');
+                                setTimeout(() => {
+                                    $('#uploadSuccessModal').modal('hide');
+                                }, 3000);
+                            cargarPacientes(); // Recargar la lista de pacientes para reflejar los cambios
+                            }else{
+                                 $('#uploadModal').modal('hide');
+                                alert('Error: ' + response.message);
+                            }
+                        },
+                        error: function () {
+                            $('#uploadModal').modal('hide');
+                            alert('Error al subir archivo.');
+                        }
+                    });
+                }
+
+                function buscar() {
+                    const input = document.getElementById('searchInput').value.toLowerCase();
+                   const suggestions = document.getElementById('suggestions');
+                    suggestions.innerHTML = ''; // Clear existing suggestions
+                    if (input === '') {
+                        mostrarPacientes(pacientesData);
+                        return;
+                    }
+
+                    const filteredData = pacientesData.filter(paciente => paciente.nombre.toLowerCase().includes(input));
+                    mostrarPacientes(filteredData);
+
+                    filteredData.forEach(paciente => {
+                        const suggestionItem = document.createElement('div');
+                        suggestionItem.classList.add('suggestion-item');
+                        suggestionItem.textContent = paciente.nombre;
+                        suggestionItem.onclick = () => {
+                            document.getElementById('searchInput').value = paciente.nombre;
+                            suggestions.innerHTML = '';
+                            mostrarPacientes([paciente]);
+                        };
+                        suggestions.appendChild(suggestionItem);
+                    });
+                }
+    </script>
+</body>
+
+</html>
